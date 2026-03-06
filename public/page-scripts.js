@@ -2748,7 +2748,7 @@ async function runViteConverter() {
 
   // Only extract CSS separately for Supabase mode — Vite-only keeps everything in tool.html
   if (isSupabase) {
-    addFile('public/globals.css', cssContent || '/* Add global styles here */');
+    addFile('public/globals.css', balanceCss(cssContent) || '/* Add global styles here */');
   }
 
   setProgress(55);
@@ -3413,7 +3413,15 @@ async function runNxcConversion(projectName, body) {
       // Append extracted CSS to globals.css
       if (result.css) {
         var existingCss = newWs.fileContents[prefix + 'app/globals.css'] || '';
-        newWs.fileContents[prefix + 'app/globals.css'] = existingCss + '\n\n/* from ' + page.path.split('/').pop() + ' */\n' + result.css;
+        var newCss = existingCss + '\n\n/* from ' + page.path.split('/').pop() + ' */\n' + result.css;
+        // Balance braces to prevent PostCSS syntax errors on Vercel
+        var open = (newCss.match(/\{/g) || []).length;
+        var close = (newCss.match(/\}/g) || []).length;
+        if (close > open) {
+          var diff = close - open;
+          for (var bi = 0; bi < diff; bi++) { var last = newCss.lastIndexOf('}'); if (last !== -1) newCss = newCss.slice(0, last) + newCss.slice(last + 1); }
+        } else if (open > close) { newCss += '\n}'.repeat(open - close); }
+        newWs.fileContents[prefix + 'app/globals.css'] = newCss;
       }
       log('✓ ' + nextPath, 'done');
     } catch(e) {

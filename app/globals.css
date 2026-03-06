@@ -1,6 +1,6 @@
 
 
-/* from vex-studio-final (7).html */
+/* from vex-studio-final (8).html */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
@@ -927,11 +927,7 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(-
   border-right: 1px solid var(--border);
   flex-shrink: 0;
   user-select: none;
-}
-  width: 28px; height: 30px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 14px; color: var(--tx3); cursor: pointer;
-  flex-shrink: 0; transition: all 0.1s;
+  transition: all 0.1s;
 }
 .ws-add:hover { color: var(--gold); background: var(--bg3); }
 .ws-add:active { color: var(--gold); background: rgba(139,53,200,0.18); }
